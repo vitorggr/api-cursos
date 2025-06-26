@@ -1,4 +1,3 @@
-// src/services/inscricao.service.js
 const { Inscricao, Curso } = require('../models');
 
 class InscricaoService {

@@ -10,7 +10,7 @@ const options = {
             description: 'API para gerenciamento de cursos e inscrições',
         },
         servers: [
-            { url: 'http://localhost:3001', description: 'Servidor local' },
+            { url: 'http://localhost:3000', description: 'Servidor local' },
             { url: 'https://seu-projeto.up.railway.app', description: 'Produção' }
         ],
         components: {

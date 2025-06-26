@@ -16,6 +16,10 @@ Curso.belongsToMany(Usuario, {
     otherKey: 'id_usuario'
 });
 
+// Associação direta para permitir include: [Inscricao]
+Curso.hasMany(Inscricao, { foreignKey: 'id_curso' });
+Inscricao.belongsTo(Curso, { foreignKey: 'id_curso' });
+
 Inscricao.belongsTo(Usuario, { foreignKey: 'id_usuario' });
 Inscricao.belongsTo(Curso, { foreignKey: 'id_curso' });
 

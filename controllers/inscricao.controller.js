@@ -6,8 +6,6 @@ const InscricaoService = require('../services/inscricao.service');
  *   get:
  *     summary: Lista todas as inscrições
  *     tags: [Inscrições]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de inscrições
@@ -20,8 +18,6 @@ const InscricaoService = require('../services/inscricao.service');
  *   post:
  *     summary: Cria uma nova inscrição
  *     tags: [Inscrições]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:

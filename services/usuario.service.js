@@ -1,4 +1,3 @@
-// src/services/usuario.service.js
 const { Usuario, Inscricao, Curso } = require('../models');
 
 class UsuarioService {

@@ -2,7 +2,7 @@ const AuthService = require('../services/auth.service');
 
 /**
  * @swagger
- * /auth/login:
+ * /login:
  *   post:
  *     summary: Realiza login do usuário
  *     tags: [Autenticação]

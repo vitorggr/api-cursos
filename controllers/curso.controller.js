@@ -40,44 +40,50 @@ const CursoService = require('../services/curso.service');
  *       400:
  *         description: Dados inválidos
  *
- * /cursos/{idCurso}:
- *   post:
- *     summary: Inscreve o usuário autenticado em um curso
+ * /{idUsuario}:
+ *   get:
+ *     summary: Lista os cursos em que o usuário está inscrito
  *     tags: [Cursos]
  *     parameters:
  *       - in: path
- *         name: idCurso
+ *         name: idUsuario
  *         required: true
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Inscrição realizada
+ *         description: Lista de cursos inscritos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
  *       400:
- *         description: Erro na inscrição
- *     security:
- *       - bearerAuth: []
- *   delete:
- *     summary: Cancela a inscrição do usuário autenticado em um curso
- *     tags: [Cursos]
- *     parameters:
- *       - in: path
- *         name: idCurso
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Inscrição cancelada
- *       400:
- *         description: Erro ao cancelar inscrição
+ *         description: Erro ao listar cursos inscritos
  *     security:
  *       - bearerAuth: []
  */
 class CursoController {
     static async listar(req, res) {
         try {
-            const cursos = await CursoService.listar();
+            // Captura filtro e usuarioId dos query params
+            const filtro = req.query.filtro || null;
+            const usuarioId = req.query.usuarioId ? Number(req.query.usuarioId) : null;
+            const cursos = await CursoService.listar(usuarioId, filtro);
+            res.status(200).json(cursos);
+        } catch (error) {
+            res.status(500).json({ mensagem: error.message });
+        }
+    }
+
+    static async listarInscritos(req, res) {
+        try {
+            const usuarioId = Number(req.params.idUsuario);
+            if (!usuarioId) {
+                return res.status(400).json({ mensagem: 'ID do usuário é obrigatório' });
+            }
+            const cursos = await CursoService.listarInscritos(usuarioId);
             res.status(200).json(cursos);
         } catch (error) {
             res.status(500).json({ mensagem: error.message });
