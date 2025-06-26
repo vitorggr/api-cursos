@@ -1,41 +1,43 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const setupSwagger = require('./config/swagger');
 const sequelize = require('./config/database');
-require('./models');
-const AuthMiddleware = require('./middlewares/AuthMiddleware');
+const authRoutes = require('./routes/auth.routes');
+const usuarioRoutes = require('./routes/usuario.routes');
+const cursoRoutes = require('./routes/curso.routes');
+const inscricaoRoutes = require('./routes/inscricao.routes');
+const swaggerConfig = require('./config/swagger');
+const cors = require('cors');
 
 const app = express();
+const PORT = process.env.PORT || 3001;
 
 // Middlewares
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-// Rotas públicas
-app.use('/usuarios', require('./routes/users')); // POST /usuarios
-app.use('/login', require('./routes/auth'));     // POST /login
-app.use('/cursos', require('./routes/courses')); // GET /cursos (pública)
+// Swagger (exibe controllers também em dev)
+if (process.env.NODE_ENV !== 'production') {
+  swaggerConfig(app);
+}
 
-// Rotas protegidas (aplicadas dentro do arquivo de rotas)
-// As rotas POST /cursos/:idCurso, DELETE /cursos/:idCurso, GET /:idUsuario já estão protegidas no arquivo de rotas
+// Routes
+app.use('/auth', authRoutes);
+app.use(usuarioRoutes);
+app.use('/cursos', cursoRoutes);
+app.use('/inscricoes', inscricaoRoutes);
 
-// Swagger Documentation
-setupSwagger(app);
-
-// Testar conexão com banco
+// Testar conexão com o banco
 sequelize.authenticate()
-  .then(() => console.log('Conexão com banco estabelecida'))
-  .catch(err => console.error('Erro na conexão com banco:', err));
+    .then(() => console.log('✅ Conectado ao banco de dados'))
+    .catch(err => console.error('❌ Erro na conexão com o banco:', err));
 
-// Iniciar servidor
-const PORT = process.env.PORT || 3001;
+// Sincronizar modelos (em desenvolvimento)
+sequelize.sync({ alter: true })
+    .then(() => console.log('✅ Modelos sincronizados'))
+    .catch(err => console.error('❌ Erro na sincronização:', err));
+
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-  console.log(`Documentação disponível em: http://localhost:${PORT}/api-docs`);
+    console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });

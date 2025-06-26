@@ -1,39 +1,27 @@
 const sequelize = require('../config/database');
-const initUser = require('./User');
-const initCourse = require('./Course');
-const initEnrollment = require('./Enrollment');
+const Usuario = require('./usuario.model')(sequelize, sequelize.Sequelize.DataTypes);
+const Curso = require('./curso.model')(sequelize, sequelize.Sequelize.DataTypes);
+const Inscricao = require('./inscricao.model')(sequelize, sequelize.Sequelize.DataTypes);
 
-const User = initUser(sequelize);
-const Course = initCourse(sequelize);
-const Enrollment = initEnrollment(sequelize);
-
-// Definir associações
-User.belongsToMany(Course, {
-  through: Enrollment,
-  foreignKey: 'user_id',
-  otherKey: 'course_id'
+// Associações
+Usuario.belongsToMany(Curso, {
+    through: Inscricao,
+    foreignKey: 'id_usuario',
+    otherKey: 'id_curso'
 });
 
-Course.belongsToMany(User, {
-  through: Enrollment,
-  foreignKey: 'course_id',
-  otherKey: 'user_id'
+Curso.belongsToMany(Usuario, {
+    through: Inscricao,
+    foreignKey: 'id_curso',
+    otherKey: 'id_usuario'
 });
 
-// Sincronizar com o banco
-dbSync();
-
-async function dbSync() {
-  try {
-    await sequelize.sync({ alter: true });
-    console.log('Modelos sincronizados com sucesso');
-  } catch (err) {
-    console.error('Erro na sincronização:', err);
-  }
-}
+Inscricao.belongsTo(Usuario, { foreignKey: 'id_usuario' });
+Inscricao.belongsTo(Curso, { foreignKey: 'id_curso' });
 
 module.exports = {
-  User,
-  Course,
-  Enrollment
+    sequelize,
+    Usuario,
+    Curso,
+    Inscricao
 };
