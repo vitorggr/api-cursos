@@ -34,15 +34,11 @@ Este repositório contém uma API RESTful desenvolvida em Node.js (Express) e in
    npm install
    ```
 2. Configure o banco de dados em `.env` (exemplo disponível no projeto)
-3. Execute as migrações:
-   ```sh
-   npm run migrate
-   ```
-4. Inicie a API:
+3. Inicie a API:
    ```sh
    npm start
    ```
-5. Acesse a documentação Swagger em [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+4. Acesse a documentação Swagger em [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
 ## Observações
 
