@@ -51,9 +51,6 @@ async function seedCursos() {
   // Caminhos públicos para imagens do frontend
   const capaImg = '/vite.svg';
 
-  // REMOVE TODOS OS CURSOS DO BANCO (apague esta linha após testar)
-  await Curso.destroy({ where: {} });
-
   // Cursos NÃO iniciados (datas futuras) - serão listados
   const cursosPadrao = [
     { nome: 'Node.js Essencial', descricao: 'Aprenda Node.js do zero ao avançado', capa: capaImg, inicio: '2025-07-10' },
