@@ -42,7 +42,19 @@ class AuthController {
     static async registrar(req, res) {
         try {
             const { nome, email, senha, nascimento } = req.body;
-            await AuthService.registrar(nome, email, senha, nascimento);
+            // Conversão segura da data de nascimento para o formato aceito pelo MySQL
+            let nascimentoISO;
+            if (/^\d{2}\/\d{2}\/\d{4}$/.test(nascimento)) {
+                // dd/mm/aaaa
+                const [dia, mes, ano] = nascimento.split('/');
+                nascimentoISO = `${ano}-${mes}-${dia}`;
+            } else if (/^\d{4}-\d{2}-\d{2}$/.test(nascimento)) {
+                // yyyy-mm-dd
+                nascimentoISO = nascimento;
+            } else {
+                return res.status(400).json({ mensagem: 'Data de nascimento inválida. Use dd/mm/aaaa ou yyyy-mm-dd.' });
+            }
+            await AuthService.registrar(nome, email, senha, nascimentoISO);
             res.status(201).json({ mensagem: 'Usuário criado com sucesso' });
         } catch (error) {
             res.status(400).json({ mensagem: error.message });

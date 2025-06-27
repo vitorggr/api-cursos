@@ -65,9 +65,12 @@ const CursoService = require('../services/curso.service');
  *       - bearerAuth: []
  */
 class CursoController {
+    /**
+     * Lista todos os cursos, com suporte a filtro e indicação de inscrição do usuário (se informado)
+     */
     static async listar(req, res) {
         try {
-            // Captura filtro e usuarioId dos query params
+            // Permite filtrar cursos por nome/descrição e indicar se o usuário está inscrito
             const filtro = req.query.filtro || null;
             const usuarioId = req.query.usuarioId ? Number(req.query.usuarioId) : null;
             const cursos = await CursoService.listar(usuarioId, filtro);
@@ -77,11 +80,15 @@ class CursoController {
         }
     }
 
+    /**
+     * Lista os cursos em que o usuário está inscrito
+     */
     static async listarInscritos(req, res) {
         try {
+            // Garante que o idUsuario é um número válido, senão retorna array vazio
             const usuarioId = Number(req.params.idUsuario);
-            if (!usuarioId) {
-                return res.status(400).json({ mensagem: 'ID do usuário é obrigatório' });
+            if (isNaN(usuarioId)) {
+                return res.status(200).json([]);
             }
             const cursos = await CursoService.listarInscritos(usuarioId);
             res.status(200).json(cursos);

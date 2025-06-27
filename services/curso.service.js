@@ -2,14 +2,23 @@ const { Curso, Inscricao, sequelize } = require('../models');
 const { Op } = require('sequelize');
 
 class CursoService {
-    // Lista cursos, com filtro opcional e informações de inscrição do usuário
+    /**
+     * Lista cursos, com filtro opcional e informações de inscrição do usuário
+     * @param {number|null} usuarioId - ID do usuário para indicar inscrição
+     * @param {string|null} filtro - Filtro de busca por nome/descrição
+     */
     static async listar(usuarioId = null, filtro = null) {
-        const whereClause = filtro ? {
-            [Op.or]: [
-                { nome: { [Op.like]: `%${filtro}%` } },
-                { descricao: { [Op.like]: `%${filtro}%` } }
-            ]
-        } : {};
+        // Ajuste: só retorna cursos que ainda não iniciaram (inicio > hoje)
+        const today = new Date().toISOString().slice(0, 10);
+        const whereClause = {
+            ...(filtro ? {
+                [Op.or]: [
+                    { nome: { [Op.like]: `%${filtro}%` } },
+                    { descricao: { [Op.like]: `%${filtro}%` } }
+                ]
+            } : {}),
+            inicio: { [Op.gt]: today }
+        };
 
         // Busca cursos e conta inscrições ativas
         const cursos = await Curso.findAll({
@@ -25,6 +34,7 @@ class CursoService {
             order: [['inicio', 'ASC']]
         });
 
+        // Retorna cursos com informações de inscrição e contagem
         return cursos.map(curso => ({
             id: curso.id,
             nome: curso.nome,
@@ -36,7 +46,10 @@ class CursoService {
         }));
     }
 
-    // Lista apenas cursos em que o usuário está inscrito
+    /**
+     * Lista apenas cursos em que o usuário está inscrito
+     * @param {number} usuarioId - ID do usuário
+     */
     static async listarInscritos(usuarioId) {
         const cursos = await Curso.findAll({
             include: [{
@@ -66,6 +79,10 @@ class CursoService {
         }));
     }
 
+    /**
+     * Busca um curso pelo ID
+     * @param {number} id
+     */
     static async buscarPorId(id) {
         return await Curso.findByPk(id);
     }

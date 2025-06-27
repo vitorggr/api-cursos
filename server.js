@@ -51,26 +51,31 @@ async function seedCursos() {
   // Caminhos públicos para imagens do frontend
   const capaImg = '/vite.svg';
 
-  const cursosPadrao = [
-    { nome: 'Node.js Básico', descricao: 'Curso introdutório de Node.js', capa: capaImg, inicio: '2025-07-01' },
-    { nome: 'React Essencial', descricao: 'Aprenda React do zero', capa: capaImg, inicio: '2025-07-05' },
-    { nome: 'Banco de Dados MySQL', descricao: 'Modelagem e SQL', capa: capaImg, inicio: '2025-07-10' },
-    { nome: 'APIs RESTful', descricao: 'Construa APIs modernas', capa: capaImg, inicio: '2025-07-15' },
-    { nome: 'JavaScript Avançado', descricao: 'Conceitos avançados de JS', capa: capaImg, inicio: '2025-07-20' },
-    { nome: 'TypeScript na Prática', descricao: 'Typed JavaScript', capa: capaImg, inicio: '2025-07-25' },
-    { nome: 'Docker para Devs', descricao: 'Containers e DevOps', capa: capaImg, inicio: '2025-08-01' },
-    { nome: 'Git e GitHub', descricao: 'Controle de versão', capa: capaImg, inicio: '2025-08-05' },
-    { nome: 'Express.js Completo', descricao: 'Framework backend Node', capa: capaImg, inicio: '2025-08-10' },
-    { nome: 'Testes Automatizados', descricao: 'Jest, Mocha e mais', capa: capaImg, inicio: '2025-08-15' }
-  ];
+  // REMOVE TODOS OS CURSOS DO BANCO (apague esta linha após testar)
+  await Curso.destroy({ where: {} });
 
+  // Cursos NÃO iniciados (datas futuras) - serão listados
+  const cursosPadrao = [
+    { nome: 'Node.js Essencial', descricao: 'Aprenda Node.js do zero ao avançado', capa: capaImg, inicio: '2025-07-10' },
+    { nome: 'React Completo', descricao: 'Desenvolvimento de SPAs com React', capa: capaImg, inicio: '2025-07-15' },
+    { nome: 'Banco de Dados MySQL', descricao: 'Modelagem, SQL e otimização', capa: capaImg, inicio: '2025-07-20' },
+    { nome: 'APIs RESTful com Express', descricao: 'Construa APIs modernas e seguras', capa: capaImg, inicio: '2025-07-25' },
+    { nome: 'JavaScript Avançado', descricao: 'Conceitos avançados e boas práticas', capa: capaImg, inicio: '2025-08-01' },
+    { nome: 'TypeScript na Prática', descricao: 'Typed JavaScript para projetos reais', capa: capaImg, inicio: '2025-08-05' },
+    { nome: 'Docker para Devs', descricao: 'Containers, DevOps e deploy', capa: capaImg, inicio: '2025-08-10' },
+    { nome: 'Git e GitHub', descricao: 'Controle de versão e colaboração', capa: capaImg, inicio: '2025-08-15' },
+    { nome: 'Testes Automatizados', descricao: 'Jest, Mocha e Cypress', capa: capaImg, inicio: '2025-08-20' },
+    // Cursos JÁ iniciados (datas passadas) - NÃO serão listados
+    { nome: 'HTML e CSS Moderno', descricao: 'Web design responsivo', capa: capaImg, inicio: '2025-06-01' },
+    { nome: 'Python para Iniciantes', descricao: 'Primeiros passos em Python', capa: capaImg, inicio: '2025-06-10' }
+  ];
   for (const curso of cursosPadrao) {
-    const existe = await Curso.findOne({ where: { nome: curso.nome } });
-    if (!existe) {
+    // Só cria se não existir curso com mesmo nome e data
+    const existente = await Curso.findOne({ where: { nome: curso.nome, inicio: curso.inicio } });
+    if (!existente) {
       await Curso.create(curso);
     }
   }
-  
 }
 
 // Executa o seed a cada inicialização para incluir cursos padrão caso não existam
