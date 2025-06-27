@@ -30,6 +30,45 @@ router.post('/cursos/:idCurso', authMiddleware.verificarToken, async (req, res, 
     next(error);
   }
 });
+/**
+ * @swagger
+ * /cursos/{idCurso}:
+ *   patch:
+ *     summary: Cancela a inscrição do usuário em um curso
+ *     tags: [Cursos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: idCurso
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do curso
+ *     responses:
+ *       200:
+ *         description: Inscrição cancelada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensagem:
+ *                   type: string
+ *                   example: Inscrição cancelada
+ *       400:
+ *         description: Erro ao cancelar inscrição
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensagem:
+ *                   type: string
+ *                   example: Inscrição não encontrada ou já cancelada
+ *       403:
+ *         description: Token inválido ou não fornecido
+ */
 router.patch('/cursos/:idCurso', authMiddleware.verificarToken, InscricaoController.cancelar);
 
 module.exports = router;
