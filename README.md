@@ -25,7 +25,6 @@ Este repositório contém uma API RESTful desenvolvida em Node.js (Express) e in
 ## Banco de Dados
 
 - Utiliza MySQL, podendo ser configurado localmente ou em nuvem (ex: Clever Cloud)
-- Migração inicial disponível em `config/migrate.js` e `sql/init.sql`
 
 ## Como rodar
 
@@ -34,6 +33,7 @@ Este repositório contém uma API RESTful desenvolvida em Node.js (Express) e in
    npm install
    ```
 2. Configure o banco de dados em `.env` (exemplo disponível no projeto)
+
 3. Inicie a API:
    ```sh
    npm start
